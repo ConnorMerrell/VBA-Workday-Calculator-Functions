@@ -1,11 +1,26 @@
 Attribute VB_Name = "WorkdayCalc"
 Option Compare Database
+Private Function daytest(testeddate As Date) As Boolean
+Select Case testeddate
+Case "06/05/2024", "27/05/2024"
+    daytest = True
+Case Else
+    Select Case Weekday(testeddate)
+    Case 1, 7
+        daytest = True
+    Case Else
+        daytest = False
+    End Select
+End Select
+    
+End Function
+
 
 Public Function Addworkdays(currdate As Date, daystotal As Long) As Date
 
 Do While daystotal > 0
     'if weekend
-    If Weekday(currdate) = 1 Or Weekday(currdate) = 7 Then
+    If daytest(currdate) = True Then
     currdate = currdate + 1
     ' if weekday
     Else
@@ -14,7 +29,7 @@ Do While daystotal > 0
     End If
 Loop
 
-Do While daystotal = 0 And (Weekday(currdate) = 1 Or Weekday(currdate) = 7)
+Do While daystotal = 0 And daytest(currdate) = True
     'if finishing day is weekend, skip over til weekday
     currdate = currdate + 1
 Loop
@@ -32,7 +47,7 @@ Select Case firstdate - seconddate
     Case Is < 0
     Do While firstdate < seconddate
         firstdate = firstdate + 1
-        If Weekday(firstdate) = 1 Or Weekday(firstdate) = 7 Then
+        If daytest(firstdate) = True Then
         Else
         a = a + 1
         End If
@@ -47,7 +62,7 @@ Select Case firstdate - seconddate
     Case Is > 0
     Do While firstdate > seconddate
         firstdate = firstdate - 1
-        If Weekday(firstdate) = 1 Or Weekday(firstdate) = 7 Then
+        If daytest(firstdate) Then
         Else
         a = a + 1
         End If
